@@ -9,7 +9,7 @@ desc "Bootstrap all virtual machines for action"
 task :bootstrap do
   sh "git submodule init master-chef-repo"
   sh "git submodule update master-chef-repo"
-  sh "cd master-chef-repo && rake update"
+  sh "cd master-chef-repo && git checkout master && rake update"
 
   env = Vagrant::Environment.new
 
