@@ -1,6 +1,10 @@
-require 'rubygems'
-require 'vagrant'
-require 'virtualbox'
+begin
+  require 'rubygems'
+  require 'vagrant'
+  require 'virtualbox'
+rescue LoadError
+  abort ">>> Dependencies could not be loaded. Perhaps try a `bundle install'."
+end
 
 def log(msg)
   puts "===> #{msg}"
