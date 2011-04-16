@@ -7,28 +7,36 @@ def log(msg)
 end
 
 def env
-  @env ||= Vagrant::Environment.new
+  @env ||= create_env
+end
+
+def create_env
+  env = Vagrant::Environment.new
+  env.ui = Vagrant::UI::Shell.new(env, Thor::Base.shell.new)
+  env.load!
+  env
+end
+
+desc "Bootstrap all virtual machines for action"
+task :bootstrap => :prep_master_chef_repo do
+  Rake::Task['vm:setup'].invoke(:apt)
+  [:manual, :script, :draft, :refactored].each do |name|
+    Rake::Task['vm:setup'].invoke(name)
+    Rake::Task['vm:suspend'].invoke(name)
+    Rake::Task['vm:snapshot'].invoke(name)
+  end
+  Rake::Task['vm:suspend'].invoke(:apt)
+  Rake::Task['vm:snapshot'].invoke(:apt)
+end
+
+desc "Initializes and updates the master chef-repo"
+task :prep_master_chef_repo do
+  sh "git submodule init master-chef-repo"
+  sh "git submodule update master-chef-repo"
+  sh "cd master-chef-repo && git checkout master && rake update"
 end
 
 namespace :vm do
-  desc "Bootstrap all virtual machines for action"
-  task :bootstrap => :prep_master_chef_repo do
-    Rake::Task[:setup].invoke(:apt)
-    [:manual, :script, :draft, :refactored].each do |name|
-      Rake::Task[:setup].invoke(name)
-      Rake::Task[:suspend].invoke(name)
-      Rake::Task[:snapshot].invoke(name)
-    end
-    Rake::Task[:suspend].invoke(:apt)
-    Rake::Task[:snapshot].invoke(:apt)
-  end
-
-  task :prep_master_chef_repo do
-    sh "git submodule init master-chef-repo"
-    sh "git submodule update master-chef-repo"
-    sh "cd master-chef-repo && git checkout master && rake update"
-  end
-
   desc "Builds a Vagrant virtual machine"
   task :setup, :vm_name do |t, args|
     vm = env.vms[args[:vm_name].to_sym]
