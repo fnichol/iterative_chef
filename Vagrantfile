@@ -33,7 +33,10 @@ Vagrant::Config.run do |config|
   config.vm.define :manual do |manual_config|
     manual_config.vm.host_name  = "the-manual-way.local"
 
-    manual_config.vm.network    "192.168.15.11"
+    manual_config.vm.network        "192.168.15.11"
+    manual_config.vm.forward_port   "manual-http", 80, 8081
+    manual_config.vm.share_folder   "v-lab", "/lab",
+                                    "iterations/the-manual-way"
 
     manual_config.vm.provision :chef_solo do |chef|
       chef.cookbooks_path = "master-chef-repo/cookbooks"
@@ -64,7 +67,10 @@ Vagrant::Config.run do |config|
   config.vm.define :script do |script_config|
     script_config.vm.host_name  = "shell-scripting.local"
 
-    script_config.vm.network    "192.168.15.12"
+    script_config.vm.network        "192.168.15.12"
+    script_config.vm.forward_port   "script-http", 80, 8082
+    script_config.vm.share_folder   "v-lab", "/lab",
+                                    "iterations/shell-scripting"
 
     script_config.vm.provision :chef_solo do |chef|
       chef.cookbooks_path = "master-chef-repo/cookbooks"
@@ -95,7 +101,10 @@ Vagrant::Config.run do |config|
   config.vm.define :draft do |draft_config|
     draft_config.vm.host_name  = "initial-draft.local"
 
-    draft_config.vm.network    "192.168.15.13"
+    draft_config.vm.network       "192.168.15.13"
+    draft_config.vm.forward_port  "draft-http", 80, 8083
+    draft_config.vm.share_folder  "v-lab", "/lab",
+                                  "iterations/initial-draft"
 
     draft_config.vm.provision :chef_solo do |chef|
       chef.cookbooks_path = "master-chef-repo/cookbooks"
@@ -126,7 +135,10 @@ Vagrant::Config.run do |config|
   config.vm.define :refactored do |refactored_config|
     refactored_config.vm.host_name  = "refactored-chef.local"
 
-    refactored_config.vm.network    "192.168.15.13"
+    refactored_config.vm.network        "192.168.15.13"
+    refactored_config.vm.forward_port   "refactored-http", 80, 8084
+    refactored_config.vm.share_folder   "v-lab", "/lab",
+                                        "iterations/refactored"
 
     refactored_config.vm.provision :chef_solo do |chef|
       chef.cookbooks_path = "master-chef-repo/cookbooks"
