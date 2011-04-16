@@ -1,46 +1,87 @@
 require 'rubygems'
 require 'vagrant'
+require 'virtualbox'
 
 def log(msg)
   puts "===> #{msg}"
 end
 
-desc "Bootstrap all virtual machines for action"
-task :bootstrap do
-  sh "git submodule init master-chef-repo"
-  sh "git submodule update master-chef-repo"
-  sh "cd master-chef-repo && git checkout master && rake update"
+def env
+  @env ||= Vagrant::Environment.new
+end
 
-  env = Vagrant::Environment.new
-
-  apt = env.vms[:apt]
-
-  if apt.created? && apt.saved?
-    log "Resuming apt host..."
-    env.cli "resume", "apt"
-  else
-    log "Bootstrapping apt host..."
-    env.cli "up", "apt"
+namespace :vm do
+  desc "Bootstrap all virtual machines for action"
+  task :bootstrap => :prep_master_chef_repo do
+    Rake::Task[:setup].invoke(:apt)
+    [:manual, :script, :draft, :refactored].each do |name|
+      Rake::Task[:setup].invoke(name)
+      Rake::Task[:suspend].invoke(name)
+      Rake::Task[:snapshot].invoke(name)
+    end
+    Rake::Task[:suspend].invoke(:apt)
+    Rake::Task[:snapshot].invoke(:apt)
   end
-  log "apt up and running."
 
-  [:manual, :script, :draft, :refactored].each do |name|
-    vm = env.vms[name]
+  task :prep_master_chef_repo do
+    sh "git submodule init master-chef-repo"
+    sh "git submodule update master-chef-repo"
+    sh "cd master-chef-repo && git checkout master && rake update"
+  end
+
+  desc "Builds a Vagrant virtual machine"
+  task :setup, :vm_name do |t, args|
+    vm = env.vms[args[:vm_name].to_sym]
 
     if vm.created? && vm.saved?
-      log "Resuming #{name} host..."
-      env.cli "resume", name
+      log "Resuming #{vm.name} host..."
+      env.cli "resume", vm.name
     else
-      log "Bootstrapping #{name} host..."
-      env.cli "up", name
+      log "Bootstrapping #{vm.name} host..."
+      env.cli "up", vm.name
     end
-    log "#{name} is up."
-    log "Suspending #{name} host..."
-    env.cli "suspend", name
-    log "#{name} is suspended."
+    log "#{vm.name} is up."
   end
 
-  log "Suspending apt host..."
-  env.cli "suspend", "apt"
-  log "apt is suspended."
+  desc "Suspends a Vagrant virtual machine"
+  task :suspend, :vm_name do |t, args|
+    log "Suspending #{args[:vm_name]} host..."
+    env.cli "suspend", args[:vm_name]
+    log "#{args[:vm_name]} is suspended."
+  end
+
+  desc "Takes a snapshot of a Vagrant virtual machine"
+  task :snapshot, :vm_name, :snapshot_name do |t, args|
+    args.with_defaults(:snapshot_name => "0-clean")
+
+    vagrant_vm = env.vms[args[:vm_name].to_sym]
+    virtualbox_vm = VirtualBox::VM.find(vagrant_vm.uuid)
+
+    if vagrant_vm.created? && virtualbox_vm.running?
+      Rake::Task[:suspend].invoke(args[:vm_name])
+    end
+
+    log "Taking a snapshot of #{args[:vm_name]} host called 0-clean..."
+    virtualbox_vm.take_snapshot(args[:snapshot_name], "Taken by iterative_chef_lab")
+    log "Snapshot taken for #{args[:vm_name]}."
+  end
+
+  desc "Rolls back a Vagrant virtual machine to a previous snapshot"
+  task :rollback, :vm_name, :snapshot_name do |t, args|
+    args.with_defaults(:snapshot_name => "0-clean")
+
+    vagrant_vm = env.vms[args[:vm_name].to_sym]
+    virtualbox_vm = VirtualBox::VM.find(vagrant_vm.uuid)
+    snapshot = virtualbox_vm.find_snapshot(args[:snapshot_name])
+
+    if vagrant_vm.created? && virtualbox_vm.running?
+      log "Stopping host #{args[:vm_name]}..."
+      virtualbox_vm.stop
+      log "#{args[:vm_name]} is off."
+    end
+
+    log "Rolling back to snapshot '#{args[:snapshot_name]}' for host #{args[:vm_name]}..."
+    snapshot.restore
+    log "Rolled back #{args[:vm_name]} to '#{args[:snapshot_name]}'."
+  end
 end
