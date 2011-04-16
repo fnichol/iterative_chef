@@ -49,15 +49,19 @@ namespace :vm do
   desc "Builds a Vagrant virtual machine"
   task :setup, :vm_name do |t, args|
     vm = env.vms[args[:vm_name].to_sym]
+    virtualbox_vm = VirtualBox::VM.find(vm.uuid)
 
     if vm.created? && vm.saved?
       log "Resuming #{vm.name} host..."
       env.cli "resume", vm.name
+      log "#{vm.name} is up."
+    elsif vm.created? && virtualbox_vm.running?
+      log "#{vm.name} is already running, skipping" and return
     else
       log "Bootstrapping #{vm.name} host..."
       env.cli "up", vm.name
+      log "#{vm.name} is up."
     end
-    log "#{vm.name} is up."
   end
 
   desc "Suspends a Vagrant virtual machine"
