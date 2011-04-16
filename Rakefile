@@ -25,11 +25,16 @@ desc "Bootstrap all virtual machines for action"
 task :bootstrap => :prep_master_chef_repo do
   Rake::Task['vm:setup'].invoke(:apt)
   [:manual, :script, :draft, :refactored].each do |name|
+    Rake::Task['vm:setup'].reenable
     Rake::Task['vm:setup'].invoke(name)
+    Rake::Task['vm:suspend'].reenable
     Rake::Task['vm:suspend'].invoke(name)
+    Rake::Task['vm:snapshot'].reenable
     Rake::Task['vm:snapshot'].invoke(name)
   end
+  Rake::Task['vm:suspend'].reenable
   Rake::Task['vm:suspend'].invoke(:apt)
+  Rake::Task['vm:snapshot'].reenable
   Rake::Task['vm:snapshot'].invoke(:apt)
 end
 
