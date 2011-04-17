@@ -1,8 +1,19 @@
 source "http://rubygems.org"
 
+gem 'json',                   "~> 1.5.1"
 gem 'chef'
-gem 'vagrant'
+gem 'vagrant',                "~> 0.7.2"
 
 group :development do
   gem 'rocco'
+  gem 'jekyll'
+  gem "sass",                 "3.1.0.alpha.249"
+  gem "compass",              "~> 0.11.beta.5"
+  gem "compass-susy-plugin",  "~> 0.9.beta.3"
+
+  gem "guard"
+  gem "guard-ego"
+  gem "guard-livereload", :git => "git://github.com/fnichol/guard-livereload.git",
+                          :branch => "bump-json"
+  gem 'guard-compass'
 end
