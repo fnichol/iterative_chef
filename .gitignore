@@ -1,3 +1,4 @@
+.rvmrc
 .vagrant
 Gemfile.lock
 docs/
