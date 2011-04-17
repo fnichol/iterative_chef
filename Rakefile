@@ -2,6 +2,8 @@ begin
   require 'rubygems'
   require 'vagrant'
   require 'virtualbox'
+  require 'rake/clean'
+  require 'rocco/tasks'
 rescue LoadError
   abort ">>> Dependencies could not be loaded. Perhaps try a `bundle install'."
 end
@@ -106,3 +108,10 @@ namespace :vm do
     log "Rolled back #{args[:vm_name]} to '#{args[:snapshot_name]}'."
   end
 end
+
+Rocco::make 'docs/', 'iterations/**/*.sh', { :language => 'bash' }
+Rocco::make 'docs/', 'iterations/**/*.rb'
+CLEAN.include 'docs/'
+
+desc 'Build rocco docs'
+task :docs => :rocco
