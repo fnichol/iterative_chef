@@ -109,8 +109,9 @@ namespace :vm do
   end
 end
 
-Rocco::make 'site/', 'iterations/**/*.sh', { :language => 'bash' }
-Rocco::make 'site/', 'iterations/**/*.rb'
+Rocco::make 'docs/', 'iterations/**/*.sh', { :language => 'bash' }
+Rocco::make 'docs/', 'iterations/**/*.rb'
+CLEAN.include 'docs'
 
 desc 'Build rocco docs'
 task :docs => :rocco

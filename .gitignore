@@ -1,4 +1,5 @@
 .rvmrc
 .vagrant
 Gemfile.lock
+docs/
 site/_site
