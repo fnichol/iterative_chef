@@ -46,7 +46,7 @@ configure_flags="
 # the tarball. It's installed by default in Ubuntu base, but
 # no harm in being explicit.
 pkgs=( wget build-essential binutils-doc autoconf flex bison
-       libpcre3 libpcre3-dev libssl-dev)
+       libpcre3 libpcre3-dev libssl-dev )
 
 ### Install Pre-requisite Packages
 
