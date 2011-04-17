@@ -12,4 +12,5 @@ guard 'shell' do
 end
 
 guard 'livereload' do
+  watch(%r{site/**/.+\.(html|markdown|md)})
 end
