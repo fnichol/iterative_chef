@@ -13,7 +13,5 @@ gem "growl"
 
 gem "guard"
 gem "guard-ego"
-gem "guard-livereload", :git => "git://github.com/fnichol/guard-livereload.git",
-                        :branch => "bump-json"
+gem "guard-livereload"
 gem 'guard-compass'
-gem 'guard-shell'
