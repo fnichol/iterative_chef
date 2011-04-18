@@ -57,3 +57,8 @@ cookbook_file "/etc/init.d/nginx" do
   group   "root"
   mode    "0755"
 end
+
+service "nginx" do
+  supports  :restart => true, :reload => true, :status => true
+  action    [ :enable, :start ]
+end

@@ -95,5 +95,16 @@ log "Building nginx"
 (cd $cache_dir/$tar_dir && ./configure $configure_flags)
 (cd $cache_dir/$tar_dir && make && make install)
 
+log "Installing /etc/init.d/nginx..."
+wget --no-check-certificate \
+  'https://gist.github.com/raw/924883/nginx.init.sh' \
+  -O /etc/init.d/nginx
+chown root:root /etc/init.d/nginx
+chmod 755 /etc/init.d/nginx
+
+log "Starting the nginx daemon..."
+/usr/sbin/update-rc.d -f nginx defaults
+service nginx start
+
 # And that's it, thanks for playing along.
 log "Installation of nginx is complete, w00t\!"
