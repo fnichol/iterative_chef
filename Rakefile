@@ -1,11 +1,13 @@
 begin
   require 'rubygems'
+  require 'bundler/setup'
+
   require 'vagrant'
   require 'virtualbox'
   require 'rake/clean'
   require 'rocco/tasks'
-rescue LoadError
-  abort ">>> Dependencies could not be loaded. Perhaps try a `bundle install'."
+rescue LoadError => ex
+  abort ">>> Dependencies could not be loaded (#{ex}). Perhaps try a `bundle install'."
 end
 
 def log(msg)

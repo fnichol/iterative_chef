@@ -1,5 +1,6 @@
 {
   "run_list": [
+    "recipe[sandbox::motd]",
     "recipe[sandbox::nginx]"
   ]
 }
