@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>motd.rb</title>
+  <link rel="stylesheet" href="http://jashkenas.github.com/docco/resources/docco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div id="jump_to">
+    Jump To &hellip;
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source" href="../../../config/solo.html">solo.rb</a>
+          <a class="source" href="motd.html">motd.rb</a>
+          <a class="source" href="nginx.html">nginx.rb</a>
+          <a class="source" href="../../../../refactored/config/solo.html">solo.rb</a>
+      </div>
+    </div>
+  </div>
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>motd.rb</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-1'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-1">&#182;</a>
+        </div>
+        <p>Creates a custom <strong>Message Of The Day</strong> when a user logs in. A little
+too trivial, but you can see some of Chef&rsquo;s parts nonetheless.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre></pre></div>
+      </td>
+    </tr>
+    <tr id='section-2'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-2">&#182;</a>
+        </div>
+        <p>The <strong>file</strong> resource manages a file an optionally its contents. In
+this case we&rsquo;re setting the contents of the file with the <code>content</code>
+attribute. In the real world, most people would set up a <strong>template</strong>
+and manage the file&rsquo;s contents that way (think Ruby on Rails view
+template and you&rsquo;re most of the way there).</p>
+
+<p>For more details about how this resource works, consult the Chef
+<a href="http://wiki.opscode.com/display/chef/Resources#Resources-File">resources</a> wiki page.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="n">file</span> <span class="s2">&quot;/etc/motd.tail&quot;</span> <span class="k">do</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-3'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-3">&#182;</a>
+        </div>
+        <p>This will be the owner of the file. We&rsquo;re being a bit explicit here.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">owner</span>   <span class="s2">&quot;root&quot;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-4">&#182;</a>
+        </div>
+        <p>This will be the group ownership of the file. Woah.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">group</span>   <span class="s2">&quot;root&quot;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-5'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-5">&#182;</a>
+        </div>
+        <p>This is the default action, to create the file. Other possible
+actions are <code>:delete</code> to ensure the file is deleted and <code>:touch</code>
+to update the file&rsquo;s mtime and atime on each run.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">action</span>  <span class="ss">:create</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-6'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-6">&#182;</a>
+        </div>
+        <p>The contents of our file. The <code>node[:xxx]</code> parts will use the
+dynamic system values determined by Chef at runtime (using the
+<a href="http://wiki.opscode.com/display/chef/Ohai">Ohai</a> gem).</p>
+
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>  <span class="n">content</span> <span class="o">&lt;&lt;-</span><span class="no">MOTD</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/^ {4}/</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+<span class="sh">    ============================================================</span>
+<span class="sh">      Hello, World!</span>
+<span class="sh">      Welcome to #{node[:fqdn]} running #{node[:platform].capitalize}</span>
+
+<span class="sh">      Your server is being tenderly cared for thanks to Chef</span>
+<span class="sh">      version #{node[:chef_packages][:chef][:version]}.</span>
+
+<span class="sh">      Enjoy yourself, and use all #{node[:memory][:total]} of your RAM.</span>
+<span class="sh">    ============================================================</span>
+
+<span class="no">  MOTD</span>
+<span class="k">end</span></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>
