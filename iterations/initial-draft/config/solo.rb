@@ -23,7 +23,7 @@ file_cache_path   "/tmp/chef-solo"
 # appear to be used much in the [wild][wi]
 #
 # [wi]: https://twitter.com/#!/mitchellh/status/57539400908808192
-coobook_path      "/lab/cookbooks"
+cookbook_path      "/lab/cookbooks"
 
 # The path to your JSON attributes. Also widely known as your Chef *DNA*.
 # There's where you are customizing want you want configured and tweak
