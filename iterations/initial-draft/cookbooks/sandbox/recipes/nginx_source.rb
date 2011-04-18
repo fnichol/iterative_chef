@@ -50,3 +50,10 @@ execute "compile nginx" do
   command   %{./configure #{configure_flags.join(' ')} && make && make install}
   creates   "/opt/#{tar_dir}/sbin/nginx"
 end
+
+cookbook_file "/etc/init.d/nginx" do
+  source  "nginx.init"
+  owner   "root"
+  group   "root"
+  mode    "0755"
+end
