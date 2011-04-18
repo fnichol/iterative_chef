@@ -25,6 +25,14 @@ def create_env
   env
 end
 
+def no_bundler
+  no_bundler_env = Hash.new
+  %w{ BUNDLE_BIN_PATH BUNDLE_GEMFILE RUBYOPT }.each do |var|
+    no_bundler_env[var] = nil
+  end
+  no_bundler_env
+end
+
 desc "Bootstrap all virtual machines for action"
 task :bootstrap => :prep_master_chef_repo do
   Rake::Task['vm:setup'].invoke(:apt)
@@ -46,7 +54,10 @@ desc "Initializes and updates the master chef-repo"
 task :prep_master_chef_repo do
   sh "git submodule init master-chef-repo"
   sh "git submodule update master-chef-repo"
-  sh "cd master-chef-repo && git checkout master && rake update"
+  Dir.chdir 'master-chef-repo' do
+    sh "git checkout master"
+    system(no_bundler, "rake update")
+  end
 end
 
 namespace :vm do
