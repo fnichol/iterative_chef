@@ -8,5 +8,5 @@ guard 'compass' do
 end
 
 guard 'livereload' do
-  watch(%r{site/**/.+\.(html|markdown|md)})
+  watch(%r{**/.+\.(html|markdown|md)})
 end
