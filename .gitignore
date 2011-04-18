@@ -1,4 +1,4 @@
 .rvmrc
 .vagrant
 Gemfile.lock
-site/_site
+_site
