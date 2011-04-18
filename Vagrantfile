@@ -105,6 +105,8 @@ Vagrant::Config.run do |config|
     draft_config.vm.forward_port  "draft-http", 80, 8083
     draft_config.vm.share_folder  "v-lab", "/lab",
                                   "iterations/initial-draft"
+    draft_config.vm.share_folder  "v-chef-config", "/etc/chef",
+                                  "iterations/initial-draft/config"
 
     draft_config.vm.provision :chef_solo do |chef|
       chef.cookbooks_path = "master-chef-repo/cookbooks"

@@ -110,6 +110,7 @@ namespace :vm do
 end
 
 Rocco::make 'docs/', 'iterations/**/*.sh', { :language => 'bash' }
+Rocco::make 'docs/', 'iterations/**/*.json', { :language => 'js' }
 Rocco::make 'docs/', 'iterations/**/*.rb'
 CLEAN.include 'docs'
 
