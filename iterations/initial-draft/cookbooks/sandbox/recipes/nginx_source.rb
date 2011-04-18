@@ -49,6 +49,7 @@ execute "compile nginx" do
   cwd       "#{cache_dir}/#{tar_dir}"
   command   %{./configure #{configure_flags.join(' ')} && make && make install}
   creates   "/opt/#{tar_dir}/sbin/nginx"
+  notifies  :restart, "service[nginx]"
 end
 
 directory "/var/log/nginx" do
@@ -84,24 +85,27 @@ directory "/etc/nginx/sites-enabled" do
 end
 
 cookbook_file "/etc/nginx/nginx.conf" do
-  source  "nginx.conf"
-  owner   "root"
-  group   "root"
-  mode    "0755"
+  source    "nginx.conf"
+  owner     "root"
+  group     "root"
+  mode      "0755"
+  notifies  :restart, "service[nginx]"
 end
 
 cookbook_file "/etc/nginx/sites-enabled/_default.conf" do
-  source  "default-site.conf"
-  owner   "root"
-  group   "root"
-  mode    "0755"
+  source    "default-site.conf"
+  owner     "root"
+  group     "root"
+  mode      "0755"
+  notifies  :restart, "service[nginx]"
 end
 
 cookbook_file "/etc/init.d/nginx" do
-  source  "nginx.init"
-  owner   "root"
-  group   "root"
-  mode    "0755"
+  source    "nginx.init"
+  owner     "root"
+  group     "root"
+  mode      "0755"
+  notifies  :restart, "service[nginx]"
 end
 
 service "nginx" do
