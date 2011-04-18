@@ -51,6 +51,52 @@ execute "compile nginx" do
   creates   "/opt/#{tar_dir}/sbin/nginx"
 end
 
+directory "/var/log/nginx" do
+  owner       "root"
+  group       "root"
+  mode        "0755"
+  recursive   true
+  action      :create
+end
+
+directory "/etc/nginx" do
+  owner       "root"
+  group       "root"
+  mode        "0755"
+  recursive   true
+  action      :create
+end
+
+directory "/etc/nginx/conf.d" do
+  owner       "root"
+  group       "root"
+  mode        "0755"
+  recursive   true
+  action      :create
+end
+
+directory "/etc/nginx/sites-enabled" do
+  owner       "root"
+  group       "root"
+  mode        "0755"
+  recursive   true
+  action      :create
+end
+
+cookbook_file "/etc/nginx/nginx.conf" do
+  source  "nginx.conf"
+  owner   "root"
+  group   "root"
+  mode    "0755"
+end
+
+cookbook_file "/etc/nginx/sites-enabled/_default.conf" do
+  source  "default-site.conf"
+  owner   "root"
+  group   "root"
+  mode    "0755"
+end
+
 cookbook_file "/etc/init.d/nginx" do
   source  "nginx.init"
   owner   "root"

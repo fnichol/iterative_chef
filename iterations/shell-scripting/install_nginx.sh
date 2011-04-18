@@ -95,6 +95,27 @@ log "Building nginx"
 (cd $cache_dir/$tar_dir && ./configure $configure_flags)
 (cd $cache_dir/$tar_dir && make && make install)
 
+for dir in /var/log/nginx /etc/nginx/{conf.d,sites-enabled} ; do
+  log "Creating $dir directory..."
+  mkdir -p $dir
+  chown root:root $dir
+  chmod 755 $dir
+done ; unset dir
+
+log "Installing /etc/nginx/nginx.conf..."
+wget --no-check-certificate \
+  'https://gist.github.com/raw/924883/nginx.conf' \
+  -O /etc/nginx/nginx.conf
+chown root:root /etc/nginx/nginx.conf
+chmod 644 /etc/nginx/nginx.conf
+
+og "Installing /etc/nginx/sites-enabled/_default.conf..."
+wget --no-check-certificate \
+  'https://gist.github.com/raw/924883/default-site.conf' \
+  -O /etc/nginx/sites-enabled/_default.conf
+chown root:root /etc/nginx/sites-enabled/_default.conf
+chmod 644 /etc/nginx/sites-enabled/_default.conf
+
 log "Installing /etc/init.d/nginx..."
 wget --no-check-certificate \
   'https://gist.github.com/raw/924883/nginx.init.sh' \
