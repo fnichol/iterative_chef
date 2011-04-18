@@ -2,7 +2,9 @@ apt_ip = "192.168.15.10"
 
 Vagrant::Config.run do |config|
 
-  config.vm.box = "ubuntu-10.10-server-i386"
+  config.vm.box     = "ubuntu-10.10-server-i386"
+  config.vm.box_url =
+    "http://dl.dropbox.com/u/2297268/ubuntu-10.10-server-i386.box"
 
   config.vm.define :apt do |apt_config|
     apt_config.vm.host_name     = "apt-cacher.local"
