@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>solo.rb</title>
+  <link rel="stylesheet" href="http://github.com/jashkenas/docco/raw/0.3.0/resources/docco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div id="jump_to">
+    Jump To &hellip;
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source" href="solo.html">solo.rb</a>
+          <a class="source" href="../coobooks/sandbox/recipes/nginx.html">nginx.rb</a>
+      </div>
+    </div>
+  </div>
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>solo.rb</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-1'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-1">&#182;</a>
+        </div>
+        <p><strong>chef-solo configuration files</strong> will cut down on the amount of command
+line arguments you need to pass to chef-solo. With the following
+configuration, you could just issue <code>chef-solo</code> and you&rsquo;re off to the
+races. By default, <em>chef-solo</em> will look for a <code>solo.rb</code> file at
+<code>/etc/chef/solo.rb</code>. To override this pass it the <code>-c &lt;path&gt;</code> argument,
+for example:</p>
+
+<p>chef-solo -c /etc/chef/solo.rb -j /etc/chef/dna.json</p>
+
+<p>For more gory details or to further tweak your defaults, check out the
+<a href="http://wiki.opscode.com/display/chef/Chef+Configuration+Settings">Chef Configuration Settings</a> wiki page.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre></pre></div>
+      </td>
+    </tr>
+    <tr id='section-2'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-2">&#182;</a>
+        </div>
+        <p>As quoted from the <a href="http://wiki.opscode.com/display/chef/Chef+Configuration+Settings#ChefConfigurationSettings-filecachepath">reference</a>: <em>&ldquo;Where to locally store cache
+files like cookbooks and other transient data&rdquo;</em>. So uh, yeah&hellip; just
+set a temporary path here and move along.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="n">file_cache_path</span>   <span class="s2">&quot;/tmp/chef-solo&quot;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-3'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-3">&#182;</a>
+        </div>
+        <p>The location chef-solo goes looking for chef cookbooks. This could also
+be a list if there are multiple directories. A list, however does not
+appear to be used much in the <a href="https://twitter.com/#!/mitchellh/status/57539400908808192">wild</a></p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="n">coobook_path</span>      <span class="s2">&quot;/lab/coobooks&quot;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-4">&#182;</a>
+        </div>
+        <p>The path to your JSON attributes. Also widely known as your Chef <em>DNA</em>.
+There&rsquo;s where you are customizing want you want configured and tweak
+attribute settings (like listing users, packages, versions, etc.).</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="n">json_attribs</span>      <span class="s2">&quot;/etc/chef/dna.json&quot;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-5'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-5">&#182;</a>
+        </div>
+        <p>The default log level for a <em>chef-solo</em> execution. <code>:info</code> will give
+you a nice resource-leve description of what is going on (i.e.
+<em>&ldquo;Creating file[/etc/cool/mojo.cnf] at /etc/cool/mojo.cnf&rdquo;</em> or
+<em>&ldquo;Setting mode to 644 for file[/etc/cool/mojo.cnf]&rdquo;</em>).</p>
+
+<p>For development and troubleshooting, I&rsquo;d recommend getting used to the
+<code>:debug</code> level output. You&rsquo;ll see exactly what commands get executed,
+if it&rsquo;s skipping resources, the order it loads cookbooks, etc.</p>
+
+<p>To increase the verbosity of logging for a one-off execution, pass
+<em>chef-solo</em> <code>-l debug</code> as an argument.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="n">log_level</span>         <span class="ss">:info</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-6'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-6">&#182;</a>
+        </div>
+        <p>You can redirect the log output to a file or <code>STDOUT</code>. <code>STDOUT</code> may
+not be the ideal in production as you might want to have a log of what
+happened when (this can be very useful for audits or blames).</p>
+
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="n">log_location</span>      <span class="no">STDOUT</span></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>
