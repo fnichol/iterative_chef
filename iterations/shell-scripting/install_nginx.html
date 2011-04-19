@@ -276,45 +276,94 @@ follows a very standard (and sane) build process of running
       <td class=code>
         <div class='highlight'><pre>log <span class="s2">&quot;Building nginx&quot;</span>
 <span class="o">(</span><span class="nb">cd</span> <span class="nv">$cache_dir</span>/<span class="nv">$tar_dir</span> <span class="o">&amp;&amp;</span> ./configure <span class="nv">$configure_flags</span><span class="o">)</span>
-<span class="o">(</span><span class="nb">cd</span> <span class="nv">$cache_dir</span>/<span class="nv">$tar_dir</span> <span class="o">&amp;&amp;</span> make <span class="o">&amp;&amp;</span> make install<span class="o">)</span>
-
-<span class="k">for </span>dir in /var/log/nginx /etc/nginx/<span class="o">{</span>conf.d,sites-enabled<span class="o">}</span> ; <span class="k">do</span>
-<span class="k">  </span>log <span class="s2">&quot;Creating $dir directory...&quot;</span>
-  mkdir -p <span class="nv">$dir</span>
-  chown root:root <span class="nv">$dir</span>
-  chmod 755 <span class="nv">$dir</span>
-<span class="k">done</span> ; <span class="nb">unset </span>dir
-
-log <span class="s2">&quot;Installing /etc/nginx/nginx.conf...&quot;</span>
-wget --no-check-certificate <span class="se">\</span>
-  <span class="s1">&#39;https://gist.github.com/raw/924883/nginx.conf&#39;</span> <span class="se">\</span>
-  -O /etc/nginx/nginx.conf
-chown root:root /etc/nginx/nginx.conf
-chmod 644 /etc/nginx/nginx.conf
-
-og <span class="s2">&quot;Installing /etc/nginx/sites-enabled/_default.conf...&quot;</span>
-wget --no-check-certificate <span class="se">\</span>
-  <span class="s1">&#39;https://gist.github.com/raw/924883/default-site.conf&#39;</span> <span class="se">\</span>
-  -O /etc/nginx/sites-enabled/_default.conf
-chown root:root /etc/nginx/sites-enabled/_default.conf
-chmod 644 /etc/nginx/sites-enabled/_default.conf
-
-log <span class="s2">&quot;Installing /etc/init.d/nginx...&quot;</span>
-wget --no-check-certificate <span class="se">\</span>
-  <span class="s1">&#39;https://gist.github.com/raw/924883/nginx.init.sh&#39;</span> <span class="se">\</span>
-  -O /etc/init.d/nginx
-chown root:root /etc/init.d/nginx
-chmod 755 /etc/init.d/nginx
-
-log <span class="s2">&quot;Starting the nginx daemon...&quot;</span>
-/usr/sbin/update-rc.d -f nginx defaults
-service nginx start</pre></div>
+<span class="o">(</span><span class="nb">cd</span> <span class="nv">$cache_dir</span>/<span class="nv">$tar_dir</span> <span class="o">&amp;&amp;</span> make <span class="o">&amp;&amp;</span> make install<span class="o">)</span></pre></div>
       </td>
     </tr>
     <tr id='section-21'>
       <td class=docs>
         <div class="pilwrap">
           <a class="pilcrow" href="#section-21">&#182;</a>
+        </div>
+        <p>Now we&rsquo;ll loop through a few directories that need to exist
+for nginx to start.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="k">for </span>dir in /var/log/nginx /etc/nginx/<span class="o">{</span>conf.d,sites-enabled<span class="o">}</span> ; <span class="k">do</span>
+<span class="k">  </span>log <span class="s2">&quot;Creating $dir directory...&quot;</span>
+  mkdir -p <span class="nv">$dir</span>
+  chown root:root <span class="nv">$dir</span>
+  chmod 755 <span class="nv">$dir</span>
+<span class="k">done</span> ; <span class="nb">unset </span>dir</pre></div>
+      </td>
+    </tr>
+    <tr id='section-22'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-22">&#182;</a>
+        </div>
+        <p>Download an nginx config file off GitHub to make this script
+a little more portable.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>log <span class="s2">&quot;Installing /etc/nginx/nginx.conf...&quot;</span>
+wget --no-check-certificate <span class="se">\</span>
+  <span class="s1">&#39;https://gist.github.com/raw/924883/nginx.conf&#39;</span> <span class="se">\</span>
+  -O /etc/nginx/nginx.conf
+chown root:root /etc/nginx/nginx.conf
+chmod 644 /etc/nginx/nginx.conf</pre></div>
+      </td>
+    </tr>
+    <tr id='section-23'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-23">&#182;</a>
+        </div>
+        <p>Download a default nginx site definition so we can display
+a pretty web page.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>log <span class="s2">&quot;Installing /etc/nginx/sites-enabled/_default.conf...&quot;</span>
+wget --no-check-certificate <span class="se">\</span>
+  <span class="s1">&#39;https://gist.github.com/raw/924883/default-site.conf&#39;</span> <span class="se">\</span>
+  -O /etc/nginx/sites-enabled/_default.conf
+chown root:root /etc/nginx/sites-enabled/_default.conf
+chmod 644 /etc/nginx/sites-enabled/_default.conf</pre></div>
+      </td>
+    </tr>
+    <tr id='section-24'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-24">&#182;</a>
+        </div>
+        <p>Download an init.d rc script so nginx is like any other
+service and comes back on reboot.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>log <span class="s2">&quot;Installing /etc/init.d/nginx...&quot;</span>
+wget --no-check-certificate <span class="se">\</span>
+  <span class="s1">&#39;https://gist.github.com/raw/924883/nginx.init.sh&#39;</span> <span class="se">\</span>
+  -O /etc/init.d/nginx
+chown root:root /etc/init.d/nginx
+chmod 755 /etc/init.d/nginx</pre></div>
+      </td>
+    </tr>
+    <tr id='section-25'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-25">&#182;</a>
+        </div>
+        <p>Finally, register the nginx service and start it up.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre>log <span class="s2">&quot;Starting the nginx daemon...&quot;</span>
+/usr/sbin/update-rc.d -f nginx defaults
+service nginx start</pre></div>
+      </td>
+    </tr>
+    <tr id='section-26'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-26">&#182;</a>
         </div>
         <p>And that&rsquo;s it, thanks for playing along.</p>
 
