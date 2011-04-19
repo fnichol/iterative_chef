@@ -95,6 +95,8 @@ log "Building nginx"
 (cd $cache_dir/$tar_dir && ./configure $configure_flags)
 (cd $cache_dir/$tar_dir && make && make install)
 
+# Now we'll loop through a few directories that need to exist
+# for nginx to start.
 for dir in /var/log/nginx /etc/nginx/{conf.d,sites-enabled} ; do
   log "Creating $dir directory..."
   mkdir -p $dir
@@ -102,6 +104,8 @@ for dir in /var/log/nginx /etc/nginx/{conf.d,sites-enabled} ; do
   chmod 755 $dir
 done ; unset dir
 
+# Download an nginx config file off GitHub to make this script
+# a little more portable.
 log "Installing /etc/nginx/nginx.conf..."
 wget --no-check-certificate \
   'https://gist.github.com/raw/924883/nginx.conf' \
@@ -109,6 +113,8 @@ wget --no-check-certificate \
 chown root:root /etc/nginx/nginx.conf
 chmod 644 /etc/nginx/nginx.conf
 
+# Download a default nginx site definition so we can display
+# a pretty web page.
 log "Installing /etc/nginx/sites-enabled/_default.conf..."
 wget --no-check-certificate \
   'https://gist.github.com/raw/924883/default-site.conf' \
@@ -116,6 +122,8 @@ wget --no-check-certificate \
 chown root:root /etc/nginx/sites-enabled/_default.conf
 chmod 644 /etc/nginx/sites-enabled/_default.conf
 
+# Download an init.d rc script so nginx is like any other
+# service and comes back on reboot.
 log "Installing /etc/init.d/nginx..."
 wget --no-check-certificate \
   'https://gist.github.com/raw/924883/nginx.init.sh' \
@@ -123,6 +131,7 @@ wget --no-check-certificate \
 chown root:root /etc/init.d/nginx
 chmod 755 /etc/init.d/nginx
 
+# Finally, register the nginx service and start it up.
 log "Starting the nginx daemon..."
 /usr/sbin/update-rc.d -f nginx defaults
 service nginx start
