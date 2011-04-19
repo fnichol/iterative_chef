@@ -17,6 +17,8 @@
           <a class="source" href="../../../../initial-draft/cookbooks/sandbox/recipes/nginx_package.html">nginx_package.rb</a>
           <a class="source" href="../../../../initial-draft/cookbooks/sandbox/recipes/nginx_source.html">nginx_source.rb</a>
           <a class="source" href="../../../config/solo.html">solo.rb</a>
+          <a class="source" href="../attributes/default.html">default.rb</a>
+          <a class="source" href="../attributes/source.html">source.rb</a>
           <a class="source" href="default.html">default.rb</a>
           <a class="source" href="package.html">package.rb</a>
           <a class="source" href="source.html">source.rb</a>
@@ -40,46 +42,36 @@
 
       </td>
       <td class=code>
-        <div class='highlight'><pre><span class="n">cache_dir</span>     <span class="o">=</span> <span class="s2">&quot;/var/cache/downloads&quot;</span>
-<span class="n">tar_url</span>       <span class="o">=</span> <span class="s2">&quot;http://nginx.org/download/nginx-0.9.7.tar.gz&quot;</span>
-<span class="n">tar_checksum</span>  <span class="o">=</span> <span class="s2">&quot;2feb0acee473cc360a620ee862907b9570a4121956c40cbd27da35f5b0a96045&quot;</span>
+        <div class='highlight'><pre><span class="n">cache_dir</span>     <span class="o">=</span> <span class="n">node</span><span class="o">[</span><span class="ss">:nginx</span><span class="o">][</span><span class="ss">:archive_cache</span><span class="o">]</span>
+<span class="n">tar_url</span>       <span class="o">=</span> <span class="n">node</span><span class="o">[</span><span class="ss">:nginx</span><span class="o">][</span><span class="ss">:tar_url</span><span class="o">]</span>
+<span class="n">tar_checksum</span>  <span class="o">=</span> <span class="n">node</span><span class="o">[</span><span class="ss">:nginx</span><span class="o">][</span><span class="ss">:tar_checksum</span><span class="o">]</span>
 <span class="n">tar_file</span>      <span class="o">=</span> <span class="n">tar_url</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">last</span>
 <span class="n">tar_dir</span>       <span class="o">=</span> <span class="n">tar_file</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sr">/\.tar\.gz$/</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
 
-<span class="n">configure_flags</span> <span class="o">=</span> <span class="o">[</span>
-  <span class="s2">&quot;--prefix=/opt/</span><span class="si">#{</span><span class="n">tar_dir</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;--conf-path=/etc/nginx/nginx.conf&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;--with-http_ssl_module&quot;</span>
-<span class="o">]</span>
+<span class="k">unless</span> <span class="n">node</span><span class="o">[</span><span class="ss">:nginx</span><span class="o">][</span><span class="ss">:extra_configure_flags</span><span class="o">].</span><span class="n">empty?</span>
+  <span class="n">node</span><span class="o">[</span><span class="ss">:nginx</span><span class="o">][</span><span class="ss">:configure_flags</span><span class="o">].</span><span class="n">push</span><span class="p">(</span>
+    <span class="o">*</span><span class="n">node</span><span class="o">[</span><span class="ss">:nginx</span><span class="o">][</span><span class="ss">:extra_configure_flags</span><span class="o">]</span><span class="p">)</span>
+<span class="k">end</span>
+<span class="n">configure_flags</span> <span class="o">=</span> <span class="n">node</span><span class="o">[</span><span class="ss">:nginx</span><span class="o">][</span><span class="ss">:configure_flags</span><span class="o">]</span>
 
-<span class="n">pkgs</span> <span class="o">=</span> <span class="sx">%w{ wget build-essential binutils-doc autoconf flex bison</span>
-<span class="sx">           libpcre3 libpcre3-dev libssl-dev }</span>
+<span class="n">pkgs</span> <span class="o">=</span> <span class="n">node</span><span class="o">[</span><span class="ss">:nginx</span><span class="o">][</span><span class="ss">:packages</span><span class="o">]</span>
 
 <span class="n">pkgs</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">pkg</span><span class="o">|</span>
-  <span class="n">package</span> <span class="n">pkg</span> <span class="k">do</span>
-    <span class="n">action</span> <span class="ss">:install</span>
-  <span class="k">end</span>
+  <span class="n">package</span> <span class="n">pkg</span>
 <span class="k">end</span>
 
 <span class="n">directory</span> <span class="n">cache_dir</span> <span class="k">do</span>
-  <span class="n">owner</span>       <span class="s2">&quot;root&quot;</span>
-  <span class="n">group</span>       <span class="s2">&quot;root&quot;</span>
   <span class="n">mode</span>        <span class="s2">&quot;0755&quot;</span>
   <span class="n">recursive</span>   <span class="kp">true</span>
-  <span class="n">action</span>      <span class="ss">:create</span>
 <span class="k">end</span>
 
 <span class="n">remote_file</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">cache_dir</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">tar_file</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">do</span>
   <span class="n">source</span>      <span class="n">tar_url</span>
   <span class="n">checksum</span>    <span class="n">tar_checksum</span>
-  <span class="n">owner</span>       <span class="s2">&quot;root&quot;</span>
-  <span class="n">group</span>       <span class="s2">&quot;root&quot;</span>
   <span class="n">mode</span>        <span class="s2">&quot;0644&quot;</span>
 <span class="k">end</span>
 
 <span class="n">execute</span> <span class="s2">&quot;extract nginx tarball&quot;</span> <span class="k">do</span>
-  <span class="n">user</span>      <span class="s2">&quot;root&quot;</span>
-  <span class="n">group</span>     <span class="s2">&quot;root&quot;</span>
   <span class="n">cwd</span>       <span class="n">cache_dir</span>
   <span class="n">command</span>   <span class="sx">%{tar zxf </span><span class="si">#{</span><span class="n">tar_file</span><span class="si">}</span><span class="sx">}</span>
   <span class="n">creates</span>   <span class="s2">&quot;</span><span class="si">#{</span><span class="n">cache_dir</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">tar_dir</span><span class="si">}</span><span class="s2">&quot;</span>
@@ -90,14 +82,58 @@
   <span class="n">group</span>     <span class="s2">&quot;root&quot;</span>
   <span class="n">cwd</span>       <span class="s2">&quot;</span><span class="si">#{</span><span class="n">cache_dir</span><span class="si">}</span><span class="s2">/</span><span class="si">#{</span><span class="n">tar_dir</span><span class="si">}</span><span class="s2">&quot;</span>
   <span class="n">command</span>   <span class="sx">%{./configure </span><span class="si">#{</span><span class="n">configure_flags</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span><span class="si">}</span><span class="sx"> &amp;&amp; make &amp;&amp; make install}</span>
-  <span class="n">creates</span>   <span class="s2">&quot;/opt/</span><span class="si">#{</span><span class="n">tar_dir</span><span class="si">}</span><span class="s2">/sbin/nginx&quot;</span>
+  <span class="n">only_if</span> <span class="k">do</span>
+    <span class="n">any_missing</span> <span class="o">=</span> <span class="kp">false</span>
+    <span class="n">configure_flags</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">flag</span><span class="o">|</span>
+      <span class="n">result</span> <span class="o">=</span> <span class="sx">%x{</span>
+<span class="sx">        if </span><span class="si">#{</span><span class="n">nginx_install</span><span class="si">}</span><span class="sx">/sbin/nginx -V 2&gt;&amp;1 | grep -q -- &quot;</span><span class="si">#{</span><span class="n">flag</span><span class="si">}</span><span class="sx">&quot; ; then</span>
+<span class="sx">          echo found</span>
+<span class="sx">        fi</span>
+<span class="sx">      }</span>
+      <span class="n">any_missing</span> <span class="o">=</span> <span class="kp">true</span> <span class="k">unless</span> <span class="n">result</span><span class="o">.</span><span class="n">chomp</span> <span class="o">==</span> <span class="s2">&quot;found&quot;</span>
+    <span class="k">end</span>
+    <span class="k">if</span> <span class="n">any_missing</span>
+      <span class="kp">true</span>
+    <span class="k">else</span>
+      <span class="n">creates</span> <span class="n">node</span><span class="o">[</span><span class="ss">:nginx</span><span class="o">][</span><span class="ss">:src_binary</span><span class="o">]</span>
+      <span class="kp">false</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
 <span class="k">end</span>
 
-<span class="n">cookbook_file</span> <span class="s2">&quot;/etc/init.d/nginx&quot;</span> <span class="k">do</span>
-  <span class="n">source</span>  <span class="s2">&quot;nginx.init&quot;</span>
-  <span class="n">owner</span>   <span class="s2">&quot;root&quot;</span>
-  <span class="n">group</span>   <span class="s2">&quot;root&quot;</span>
-  <span class="n">mode</span>    <span class="s2">&quot;0755&quot;</span>
+<span class="o">[</span> <span class="s2">&quot;/var/log/nginx&quot;</span><span class="p">,</span> <span class="s2">&quot;/etc/nginx&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;/etc/nginx/conf.d&quot;</span><span class="p">,</span> <span class="s2">&quot;/etc/nginx/sites-enabled&quot;</span>
+<span class="o">].</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">dir</span><span class="o">|</span>
+  <span class="n">directory</span> <span class="n">dir</span> <span class="k">do</span>
+    <span class="n">owner</span>       <span class="s2">&quot;root&quot;</span>
+    <span class="n">group</span>       <span class="s2">&quot;root&quot;</span>
+    <span class="n">mode</span>        <span class="s2">&quot;0755&quot;</span>
+    <span class="n">recursive</span>   <span class="kp">true</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="n">template</span> <span class="s2">&quot;/etc/nginx/nginx.conf&quot;</span> <span class="k">do</span>
+  <span class="n">source</span>    <span class="s2">&quot;nginx.conf.erb&quot;</span>
+  <span class="n">owner</span>     <span class="s2">&quot;root&quot;</span>
+  <span class="n">group</span>     <span class="s2">&quot;root&quot;</span>
+  <span class="n">mode</span>      <span class="s2">&quot;0755&quot;</span>
+  <span class="n">notifies</span>  <span class="ss">:restart</span><span class="p">,</span> <span class="s2">&quot;service[nginx]&quot;</span>
+<span class="k">end</span>
+
+<span class="n">template</span> <span class="s2">&quot;/etc/nginx/sites-enabled/_default.conf&quot;</span> <span class="k">do</span>
+  <span class="n">source</span>    <span class="s2">&quot;default-site.conf.erb&quot;</span>
+  <span class="n">owner</span>     <span class="s2">&quot;root&quot;</span>
+  <span class="n">group</span>     <span class="s2">&quot;root&quot;</span>
+  <span class="n">mode</span>      <span class="s2">&quot;0755&quot;</span>
+  <span class="n">notifies</span>  <span class="ss">:restart</span><span class="p">,</span> <span class="s2">&quot;service[nginx]&quot;</span>
+<span class="k">end</span>
+
+<span class="n">template</span> <span class="s2">&quot;/etc/init.d/nginx&quot;</span> <span class="k">do</span>
+  <span class="n">source</span>    <span class="s2">&quot;nginx.init&quot;</span>
+  <span class="n">owner</span>     <span class="s2">&quot;root&quot;</span>
+  <span class="n">group</span>     <span class="s2">&quot;root&quot;</span>
+  <span class="n">mode</span>      <span class="s2">&quot;0755&quot;</span>
+  <span class="n">notifies</span>  <span class="ss">:restart</span><span class="p">,</span> <span class="s2">&quot;service[nginx]&quot;</span>
 <span class="k">end</span>
 
 <span class="n">service</span> <span class="s2">&quot;nginx&quot;</span> <span class="k">do</span>

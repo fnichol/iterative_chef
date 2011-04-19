@@ -17,11 +17,11 @@
           <a class="source" href="../../../../initial-draft/cookbooks/sandbox/recipes/nginx_package.html">nginx_package.rb</a>
           <a class="source" href="../../../../initial-draft/cookbooks/sandbox/recipes/nginx_source.html">nginx_source.rb</a>
           <a class="source" href="../../../config/solo.html">solo.rb</a>
-          <a class="source" href="../attributes/default.html">default.rb</a>
-          <a class="source" href="../attributes/source.html">source.rb</a>
           <a class="source" href="default.html">default.rb</a>
-          <a class="source" href="package.html">package.rb</a>
           <a class="source" href="source.html">source.rb</a>
+          <a class="source" href="../recipes/default.html">default.rb</a>
+          <a class="source" href="../recipes/package.html">package.rb</a>
+          <a class="source" href="../recipes/source.html">source.rb</a>
       </div>
     </div>
   </div>
@@ -38,13 +38,21 @@
         <div class="pilwrap">
           <a class="pilcrow" href="#section-1">&#182;</a>
         </div>
-        <p>Now we can set the attribute of <code>nginx/flavor</code> if we want a
-package-based installation. By not specifying anything we
-get a source based installation.</p>
+        <p>Which install strategy do we want? Would most people want a source
+based install or a package based install?</p>
+
+<p>If you&rsquo;re building with others in mind, these questions come up.
+It&rsquo;s not all that different from building a library or API. You
+are setting default behavior which saves time and mental load
+(think Rails here), but you want to be flexible enough so that
+others can have their way.</p>
+
+<p>Given the likely user will be using passenger, unicorn or some
+Ruby based server component we&rsquo;re going to default to source based.</p>
 
       </td>
       <td class=code>
-        <div class='highlight'><pre><span class="n">include_recipe</span> <span class="s2">&quot;chef::</span><span class="si">#{</span><span class="n">node</span><span class="o">[</span><span class="ss">:nginx</span><span class="o">][</span><span class="ss">:flavor</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span></pre></div>
+        <div class='highlight'><pre><span class="n">default</span><span class="o">[</span><span class="ss">:nginx</span><span class="o">][</span><span class="ss">:flavor</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;source&quot;</span></pre></div>
       </td>
     </tr>
   </table>

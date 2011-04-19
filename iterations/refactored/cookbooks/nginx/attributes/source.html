@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>source.rb</title>
+  <link rel="stylesheet" href="http://jashkenas.github.com/docco/resources/docco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div id="jump_to">
+    Jump To &hellip;
+    <div id="jump_wrapper">
+      <div id="jump_page">
+          <a class="source" href="../../../../initial-draft/config/solo.html">solo.rb</a>
+          <a class="source" href="../../../../initial-draft/cookbooks/sandbox/recipes/motd.html">motd.rb</a>
+          <a class="source" href="../../../../initial-draft/cookbooks/sandbox/recipes/nginx_package.html">nginx_package.rb</a>
+          <a class="source" href="../../../../initial-draft/cookbooks/sandbox/recipes/nginx_source.html">nginx_source.rb</a>
+          <a class="source" href="../../../config/solo.html">solo.rb</a>
+          <a class="source" href="default.html">default.rb</a>
+          <a class="source" href="source.html">source.rb</a>
+          <a class="source" href="../recipes/default.html">default.rb</a>
+          <a class="source" href="../recipes/package.html">package.rb</a>
+          <a class="source" href="../recipes/source.html">source.rb</a>
+      </div>
+    </div>
+  </div>
+  <table cellspacing=0 cellpadding=0>
+  <thead>
+    <tr>
+      <th class=docs><h1>source.rb</h1></th>
+      <th class=code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr id='section-1'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-1">&#182;</a>
+        </div>
+        <p>The default version of nginx that gets downloaded and installed.
+Even if this code base doesn&rsquo;t get updated, you can update
+your node <em>DNA</em> JSON file.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="n">default</span><span class="o">[</span><span class="ss">:nginx</span><span class="o">][</span><span class="ss">:version</span><span class="o">]</span>      <span class="o">=</span> <span class="s2">&quot;0.9.7&quot;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-2'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-2">&#182;</a>
+        </div>
+        <p>The install path for nginx using an attribute already defined.
+If you override the <code>node[:nginx][:version]</code> in another place
+(and it wins) then this value gets dynamically updated. In
+other words, you can chain attributes to build new ones.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="n">default</span><span class="o">[</span><span class="ss">:nginx</span><span class="o">][</span><span class="ss">:install_path</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;/opt/nginx-</span><span class="si">#{</span><span class="n">nginx</span><span class="o">[</span><span class="ss">:version</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-3'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-3">&#182;</a>
+        </div>
+        <p>See, how&rsquo;s that for DRY?</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="n">default</span><span class="o">[</span><span class="ss">:nginx</span><span class="o">][</span><span class="ss">:src_binary</span><span class="o">]</span>   <span class="o">=</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">nginx</span><span class="o">[</span><span class="ss">:install_path</span><span class="o">]</span><span class="si">}</span><span class="s2">/sbin/nginx&quot;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-4'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-4">&#182;</a>
+        </div>
+        <p>There is actually a slightly better way to approach this by
+using a Chef builtin property called <code>Chef::Config[:file_cache_path]</code>.
+Just one more way to make your recipes that much more portable.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="n">default</span><span class="o">[</span><span class="ss">:nginx</span><span class="o">][</span><span class="ss">:archive_cache</span><span class="o">]</span> <span class="o">=</span> <span class="s2">&quot;/var/cache/downloads/nginx&quot;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-5'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-5">&#182;</a>
+        </div>
+        <p>Our download URL again. Now we&rsquo;re interpolating even more to
+keep things DRY and flexible.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="n">default</span><span class="o">[</span><span class="ss">:nginx</span><span class="o">][</span><span class="ss">:tar_url</span><span class="o">]</span> <span class="o">=</span>
+  <span class="s2">&quot;http://sysoev.ru/nginx/nginx-</span><span class="si">#{</span><span class="n">node</span><span class="o">[</span><span class="ss">:nginx</span><span class="o">][</span><span class="ss">:version</span><span class="o">]</span><span class="si">}</span><span class="s2">.tar.gz&quot;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-6'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-6">&#182;</a>
+        </div>
+        <p>What was this again, oh yeah.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="n">default</span><span class="o">[</span><span class="ss">:nginx</span><span class="o">][</span><span class="ss">:tar_checksum</span><span class="o">]</span> <span class="o">=</span>
+  <span class="s2">&quot;2feb0acee473cc360a620ee862907b9570a4121956c40cbd27da35f5b0a96045&quot;</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-7'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-7">&#182;</a>
+        </div>
+        <p>We don&rsquo;t get into platform independance in this lab, but there
+is a lot we can do here to make this recipe portable to the Mac,
+debian, arch linux, centos, etc.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="n">default</span><span class="o">[</span><span class="ss">:nginx</span><span class="o">][</span><span class="ss">:packages</span><span class="o">]</span> <span class="o">=</span> <span class="sx">%w{ build-essential binutils-doc autoconf</span>
+<span class="sx">                                 flex bison libpcre3 libpcre3-dev</span>
+<span class="sx">                                 libssl-dev }</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-8'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-8">&#182;</a>
+        </div>
+        <p>Here are our default configure flags again.</p>
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="n">default</span><span class="o">[</span><span class="ss">:nginx</span><span class="o">][</span><span class="ss">:configure_flags</span><span class="o">]</span> <span class="o">=</span> <span class="o">[</span>
+  <span class="s2">&quot;--prefix=</span><span class="si">#{</span><span class="n">nginx</span><span class="o">[</span><span class="ss">:install_path</span><span class="o">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;--conf-path=</span><span class="si">#{</span><span class="n">nginx</span><span class="o">[</span><span class="ss">:dir</span><span class="o">]</span><span class="si">}</span><span class="s2">/nginx.conf&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;--with-http_ssl_module&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;--with-http_gzip_static_module&quot;</span>
+<span class="o">]</span></pre></div>
+      </td>
+    </tr>
+    <tr id='section-9'>
+      <td class=docs>
+        <div class="pilwrap">
+          <a class="pilcrow" href="#section-9">&#182;</a>
+        </div>
+        <p>But this time we&rsquo;ve added an additional attribute as a hook.
+We can add other compilation flags in here, without stomping
+on our sane defaults or accidentally killing some of them.</p>
+
+      </td>
+      <td class=code>
+        <div class='highlight'><pre><span class="n">default</span><span class="o">[</span><span class="ss">:nginx</span><span class="o">][</span><span class="ss">:extra_configure_flags</span><span class="o">]</span> <span class="o">=</span> <span class="o">[]</span></pre></div>
+      </td>
+    </tr>
+  </table>
+</div>
+</body>
