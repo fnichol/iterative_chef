@@ -52,36 +52,16 @@ execute "compile nginx" do
   notifies  :restart, "service[nginx]"
 end
 
-directory "/var/log/nginx" do
-  owner       "root"
-  group       "root"
-  mode        "0755"
-  recursive   true
-  action      :create
-end
-
-directory "/etc/nginx" do
-  owner       "root"
-  group       "root"
-  mode        "0755"
-  recursive   true
-  action      :create
-end
-
-directory "/etc/nginx/conf.d" do
-  owner       "root"
-  group       "root"
-  mode        "0755"
-  recursive   true
-  action      :create
-end
-
-directory "/etc/nginx/sites-enabled" do
-  owner       "root"
-  group       "root"
-  mode        "0755"
-  recursive   true
-  action      :create
+[ "/var/log/nginx", "/etc/nginx",
+  "/etc/nginx/conf.d", "/etc/nginx/sites-enabled"
+].each do |dir|
+  directory dir do
+    owner       "root"
+    group       "root"
+    mode        "0755"
+    recursive   true
+    action      :create
+  end
 end
 
 cookbook_file "/etc/nginx/nginx.conf" do
