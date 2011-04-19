@@ -109,7 +109,7 @@ wget --no-check-certificate \
 chown root:root /etc/nginx/nginx.conf
 chmod 644 /etc/nginx/nginx.conf
 
-og "Installing /etc/nginx/sites-enabled/_default.conf..."
+log "Installing /etc/nginx/sites-enabled/_default.conf..."
 wget --no-check-certificate \
   'https://gist.github.com/raw/924883/default-site.conf' \
   -O /etc/nginx/sites-enabled/_default.conf
