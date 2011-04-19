@@ -5,7 +5,8 @@ tar_file      = tar_url.split('/').last
 tar_dir       = tar_file.sub(/\.tar\.gz$/, '')
 
 unless node[:nginx][:extra_configure_flags].empty?
-  node[:nginx][:configure_flags].push(*node[:nginx][:extra_configure_flags])
+  node[:nginx][:configure_flags].push(
+    *node[:nginx][:extra_configure_flags])
 end
 configure_flags = node[:nginx][:configure_flags]
 
